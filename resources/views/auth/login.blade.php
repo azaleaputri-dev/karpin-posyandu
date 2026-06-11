@@ -16,16 +16,16 @@
             </div>
             <div class="grid grid-cols-3 gap-4">
                 <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-sm text-teal-100">Master</p>
-                    <p class="mt-2 text-2xl font-bold">Data</p>
+                    <p class="text-sm text-teal-100">Management</p>
+                    <p class="mt-2 text-2xl font-bold">All Data</p>
                 </div>
                 <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-sm text-teal-100">Sensor</p>
-                    <p class="mt-2 text-2xl font-bold">IoT</p>
+                    <p class="text-sm text-teal-100">With</p>
+                    <p class="mt-2 text-2xl font-bold">Database Integration</p>
                 </div>
                 <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-sm text-teal-100">Panel</p>
-                    <p class="mt-2 text-2xl font-bold">Admin</p>
+                    <p class="text-sm text-teal-100">With</p>
+                    <p class="mt-2 text-2xl font-bold">Secure Access</p>
                 </div>
             </div>
         </section>
