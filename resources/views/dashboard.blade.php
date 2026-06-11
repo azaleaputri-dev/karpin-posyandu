@@ -1,101 +1,109 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="card overflow-hidden">
-        <div class="grid gap-6 bg-[linear-gradient(135deg,_rgba(15,118,110,0.96),_rgba(15,23,42,0.98))] p-6 text-white md:grid-cols-2">
-            <div class="flex flex-col justify-between">
+    <section class="card overflow-hidden border-none shadow-xl">
+        <div class="grid gap-8 bg-gradient-to-br from-brand-600 via-brand-700 to-indigo-900 p-8 text-white md:grid-cols-2">
+            <div class="flex flex-col justify-between space-y-8">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.35em] text-teal-100">Indeks Perkembangan</p>
-                    <h3 class="mt-3 max-w-xl text-4xl font-black leading-tight">Ringkasan pertumbuhan dan pemantauan posyandu</h3>
-                    <p class="mt-3 max-w-2xl text-base leading-7 text-cyan-50">
+                    <span class="inline-block rounded-full bg-white/20 px-4 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white">Indeks Perkembangan</span>
+                    <h3 class="mt-4 text-4xl font-black leading-tight tracking-tight md:text-5xl">Ringkasan pertumbuhan posyandu</h3>
+                    <p class="mt-4 max-w-xl text-sm font-medium leading-relaxed text-brand-100/80">
                         {{ auth()->user()->isAdmin() ? 'Pantauan lintas seluruh posyandu dengan fokus pada cakupan pengukuran, intensitas pencatatan, dan tren perkembangan anak selama 6 bulan terakhir.' : $scopeLabel . ' dengan fokus pada cakupan pengukuran, intensitas pencatatan, dan tren perkembangan anak selama 6 bulan terakhir.' }}
                     </p>
                 </div>
 
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <span class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-cyan-50">Periode {{ $developmentSummary['month_label'] }}</span>
-                    <span class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-cyan-50">{{ $developmentSummary['children_measured_this_month'] }} anak terpantau</span>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-5 py-3 backdrop-blur-md">
+                        <div class="h-2 w-2 rounded-full bg-brand-300 shadow-[0_0_12px_rgba(124,199,251,0.8)]"></div>
+                        <span class="text-xs font-bold text-white">Periode {{ $developmentSummary['month_label'] }}</span>
+                    </div>
+                    <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-5 py-3 backdrop-blur-md">
+                        <div class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]"></div>
+                        <span class="text-xs font-bold text-white">{{ $developmentSummary['children_measured_this_month'] }} Anak Terpantau</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid gap-3 md:grid-cols-2">
-                <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-xs uppercase tracking-[0.25em] text-teal-100">Indeks Bulan Ini</p>
-                    <p class="mt-3 text-4xl font-black">{{ number_format($developmentSummary['monitoring_index'], 1) }}%</p>
-                    <p class="mt-2 text-sm text-cyan-50">Persentase anak yang sudah terpantau pada bulan berjalan.</p>
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div class="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 transition-all hover:bg-white/10">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-brand-200">Indeks Bulan Ini</p>
+                    <p class="mt-4 text-5xl font-black tracking-tighter">{{ number_format($developmentSummary['monitoring_index'], 1) }}<span class="text-2xl">%</span></p>
+                    <p class="mt-4 text-[11px] font-medium leading-relaxed text-brand-100/60">Persentase anak yang sudah terpantau pada bulan berjalan.</p>
                 </div>
-                <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-xs uppercase tracking-[0.25em] text-teal-100">Pengukuran Aktif</p>
-                    <p class="mt-3 text-4xl font-black">{{ $stats['measurements_this_month'] }}</p>
-                    <p class="mt-2 text-sm text-cyan-50">Total catatan pengukuran yang masuk bulan ini.</p>
+                <div class="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 transition-all hover:bg-white/10">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-brand-200">Pengukuran Aktif</p>
+                    <p class="mt-4 text-5xl font-black tracking-tighter">{{ $stats['measurements_this_month'] }}</p>
+                    <p class="mt-4 text-[11px] font-medium leading-relaxed text-brand-100/60">Total catatan pengukuran yang masuk bulan ini.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="card p-5">
-            <p class="text-sm text-slate-500">Posyandu</p>
-            <p class="mt-2 text-4xl font-black text-slate-900">{{ $stats['posyandus'] }}</p>
-            <p class="mt-2 text-xs text-slate-500">Wilayah yang sedang dipantau.</p>
-        </div>
-        <div class="card p-5">
-            <p class="text-sm text-slate-500">Data Anak</p>
-            <p class="mt-2 text-4xl font-black text-slate-900">{{ $stats['children'] }}</p>
-            <p class="mt-2 text-xs text-slate-500">Anak terdaftar pada ruang lingkup akun ini.</p>
-        </div>
-        <div class="card p-5">
-            <p class="text-sm text-slate-500">Pengukuran Bulan Ini</p>
-            <p class="mt-2 text-4xl font-black text-slate-900">{{ $stats['measurements_this_month'] }}</p>
-            <p class="mt-2 text-xs text-slate-500">Aktivitas timbang dan ukur terbaru.</p>
-        </div>
-        <div class="card p-5">
-            <p class="text-sm text-slate-500">Indeks Pemantauan</p>
-            <p class="mt-2 text-4xl font-black text-slate-900">{{ number_format($stats['monitoring_index'], 1) }}%</p>
-            <p class="mt-2 text-xs text-slate-500">Cakupan anak yang sudah terpantau.</p>
-        </div>
-    </section>
+    <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        @php
+            $statCards = [
+                ['label' => 'Posyandu', 'value' => $stats['posyandus'], 'desc' => 'Wilayah pemantauan', 'icon' => '🏢'],
+                ['label' => 'Data Anak', 'value' => $stats['children'], 'desc' => 'Total anak terdaftar', 'icon' => '👶'],
+                ['label' => 'Pengukuran', 'value' => $stats['measurements_this_month'], 'desc' => 'Aktivitas bulan ini', 'icon' => '📊'],
+                ['label' => 'Cakupan', 'value' => number_format($stats['monitoring_index'], 1) . '%', 'desc' => 'Indeks pemantauan', 'icon' => '🎯'],
+            ];
+        @endphp
 
-    <section class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div class="card p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        @foreach ($statCards as $card)
+            <div class="card group flex items-start justify-between border-none p-6 transition-all hover:scale-[1.02]">
                 <div>
-                    <p class="text-sm text-slate-500">Tren 6 bulan</p>
-                    <h3 class="text-xl font-bold text-slate-900">Grafik indeks perkembangan</h3>
-                    <p class="mt-1 text-sm text-slate-500">Pergerakan indeks pemantauan, jumlah pengukuran, dan anak yang tercatat setiap bulan.</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">{{ $card['label'] }}</p>
+                    <p class="mt-2 text-3xl font-black text-slate-800 tracking-tight">{{ $card['value'] }}</p>
+                    <p class="mt-1 text-[11px] font-bold text-slate-400">{{ $card['desc'] }}</p>
                 </div>
-                <span class="inline-flex rounded-2xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600" style="align-self:flex-start; white-space:nowrap;">
-                    {{ auth()->user()->isAdmin() ? 'Mode Admin - Lintas Posyandu' : $scopeLabel }}
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-xl transition-colors group-hover:bg-brand-100">
+                    {{ $card['icon'] }}
+                </div>
+            </div>
+        @endforeach
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <div class="card border-none p-8">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <h3 class="text-xl font-black tracking-tight text-slate-800">Tren Perkembangan</h3>
+                    <p class="mt-1 text-sm font-medium text-slate-400">Analisis aktivitas 6 bulan terakhir.</p>
+                </div>
+                <span class="inline-flex rounded-xl bg-slate-100 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    {{ auth()->user()->isAdmin() ? 'Mode Administrator' : $scopeLabel }}
                 </span>
             </div>
 
-            <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-4" style="height: 360px;">
+            <div class="mt-8 h-[360px] w-full">
                 <canvas id="monthlyTrendChart"></canvas>
             </div>
         </div>
 
-        <div class="card p-6">
-            <p class="text-sm text-slate-500">Ringkasan bulan ini</p>
-            <h3 class="text-xl font-bold text-slate-900">Performa pemantauan</h3>
-            <div class="mt-5 space-y-3">
-                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                    <p class="text-sm text-slate-500">Anak terpantau</p>
-                    <p class="mt-2 text-4xl font-black text-slate-900">{{ $developmentSummary['children_measured_this_month'] }}</p>
-                    <p class="mt-1 text-xs text-slate-500">dari {{ $stats['children'] }} anak yang terdaftar</p>
+        <div class="card border-none p-8">
+            <h3 class="text-xl font-black tracking-tight text-slate-800">Performa</h3>
+            <div class="mt-6 space-y-4">
+                <div class="rounded-[2rem] bg-slate-50 p-6 ring-1 ring-black/5">
+                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Anak Terpantau</p>
+                    <p class="mt-2 text-5xl font-black tracking-tighter text-slate-800">{{ $developmentSummary['children_measured_this_month'] }}</p>
+                    <p class="mt-2 text-[11px] font-bold text-slate-400">dari <span class="text-slate-600">{{ $stats['children'] }}</span> anak terdaftar</p>
                 </div>
-                <div class="grid gap-3 md:grid-cols-2">
-                    <div class="rounded-3xl bg-emerald-50 p-5">
-                        <p class="text-sm text-emerald-700">Rata-rata berat terakhir</p>
-                        <p class="mt-2 text-2xl font-black text-emerald-900">{{ $developmentSummary['avg_latest_weight'] !== null ? number_format($developmentSummary['avg_latest_weight'], 2) . ' kg' : '-' }}</p>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="rounded-[2rem] bg-emerald-50 p-6 ring-1 ring-emerald-500/10">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Avg Weight</p>
+                        <p class="mt-2 text-2xl font-black text-emerald-900">{{ $developmentSummary['avg_latest_weight'] !== null ? number_format($developmentSummary['avg_latest_weight'], 1) . ' kg' : '-' }}</p>
                     </div>
-                    <div class="rounded-3xl bg-cyan-100 p-5">
-                        <p class="text-sm text-cyan-700">Rata-rata tinggi terakhir</p>
-                        <p class="mt-2 text-2xl font-black text-slate-900">{{ $developmentSummary['avg_latest_height'] !== null ? number_format($developmentSummary['avg_latest_height'], 2) . ' cm' : '-' }}</p>
+                    <div class="rounded-[2rem] bg-brand-50 p-6 ring-1 ring-brand-500/10">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-brand-600">Avg Height</p>
+                        <p class="mt-2 text-2xl font-black text-brand-900">{{ $developmentSummary['avg_latest_height'] !== null ? number_format($developmentSummary['avg_latest_height'], 1) . ' cm' : '-' }}</p>
                     </div>
                 </div>
-                <div class="rounded-3xl border border-slate-200 bg-white p-5">
-                    <p class="text-sm text-slate-500">Total riwayat pengukuran</p>
-                    <p class="mt-2 text-3xl font-black text-slate-900">{{ $stats['measurements'] }}</p>
+                <div class="flex items-center justify-between rounded-[2rem] bg-slate-900 p-6 text-white">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Riwayat</p>
+                        <p class="mt-1 text-2xl font-black">{{ number_format($stats['measurements']) }}</p>
+                    </div>
+                    <div class="rounded-xl bg-white/10 px-4 py-2 text-[10px] font-black uppercase">Pencatatan</div>
                 </div>
             </div>
         </div>
@@ -103,70 +111,45 @@
 
     @if (auth()->user()->isAdmin())
         <section class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div class="card p-6">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="card border-none p-8">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <p class="text-sm text-slate-500">Perbandingan wilayah</p>
-                        <h3 class="text-xl font-bold text-slate-900">Indeks perkembangan antar posyandu</h3>
-                        <p class="mt-1 text-sm text-slate-500">Bandingkan cakupan pemantauan dan intensitas pencatatan tiap posyandu.</p>
+                        <h3 class="text-xl font-black tracking-tight text-slate-800">Perbandingan Wilayah</h3>
+                        <p class="mt-1 text-sm font-medium text-slate-400">Cakupan monitoring antar posyandu.</p>
                     </div>
-                    <span class="rounded-2xl bg-cyan-100 px-3 py-2 text-xs font-semibold uppercase text-cyan-700">Admin Puskesmas</span>
+                    <span class="rounded-xl bg-brand-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-brand-600">Puskesmas Admin</span>
                 </div>
 
                 @if ($posyanduAggregate->isNotEmpty())
-                    <div class="mt-6 grid gap-3 md:grid-cols-3">
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs uppercase text-slate-500">Posyandu Terpantau</p>
-                            <p class="mt-2 text-2xl font-black text-slate-900">{{ $posyanduAggregate->count() }}</p>
-                        </div>
-                        <div class="rounded-2xl bg-emerald-50 p-4">
-                            <p class="text-xs uppercase text-emerald-700">Indeks Tertinggi</p>
-                            <p class="mt-2 text-2xl font-black text-emerald-900">{{ number_format($posyanduAggregate->max('monitoring_index'), 1) }}%</p>
-                        </div>
-                        <div class="rounded-2xl bg-cyan-50 p-4">
-                            <p class="text-xs uppercase text-cyan-700">Pengukuran Terbanyak</p>
-                            <p class="mt-2 text-2xl font-black text-slate-900">{{ $posyanduAggregate->max('month_measurements_count') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-4" style="height: 400px;">
+                    <div class="mt-8 h-[400px] w-full">
                         <canvas id="posyanduAggregateChart"></canvas>
                     </div>
                 @else
-                    <div class="mt-6 rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+                    <div class="mt-8 flex h-[400px] items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-100 p-8 text-center text-sm font-bold text-slate-300">
                         Belum ada data posyandu untuk ditampilkan.
                     </div>
                 @endif
             </div>
 
-            <div class="card p-6">
-                <p class="text-sm text-slate-500">Snapshot per posyandu</p>
-                <h3 class="text-xl font-bold text-slate-900">Cakupan bulan berjalan</h3>
-                <div class="mt-5 space-y-3">
+            <div class="card border-none p-8">
+                <h3 class="text-xl font-black tracking-tight text-slate-800">Snapshot Posyandu</h3>
+                <div class="mt-6 space-y-3">
                     @forelse ($posyanduAggregate as $item)
-                        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                <div>
-                                    <p class="font-semibold text-slate-900">{{ $item->name }}</p>
-                                    <p class="mt-1 text-xs text-slate-500">{{ $item->children_count }} anak | {{ $item->month_measurements_count }} pengukuran bulan ini</p>
-                                </div>
-                                <span class="rounded-2xl bg-emerald-100 px-3 py-2 text-xs font-semibold uppercase text-emerald-700">
-                                    {{ number_format($item->monitoring_index, 1) }}% terpantau
-                                </span>
+                        <div class="group flex items-center gap-4 rounded-3xl border border-slate-50 bg-slate-50/50 p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50">
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white font-black text-brand-600 shadow-sm transition-colors group-hover:bg-brand-600 group-hover:text-white">
+                                {{ number_format($item->monitoring_index, 0) }}%
                             </div>
-                            <div class="mt-4 grid gap-3 md:grid-cols-2 text-sm">
-                                <div class="rounded-2xl bg-white p-3">
-                                    <p class="text-slate-500">Rata-rata berat terakhir</p>
-                                    <p class="mt-1 font-bold text-slate-900">{{ $item->avg_latest_weight !== null ? number_format($item->avg_latest_weight, 2) . ' kg' : '-' }}</p>
-                                </div>
-                                <div class="rounded-2xl bg-white p-3">
-                                    <p class="text-slate-500">Rata-rata tinggi terakhir</p>
-                                    <p class="mt-1 font-bold text-slate-900">{{ $item->avg_latest_height !== null ? number_format($item->avg_latest_height, 2) . ' cm' : '-' }}</p>
-                                </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate font-black text-slate-800">{{ $item->name }}</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ $item->children_count }} Anak • {{ $item->month_measurements_count }} Pengukuran</p>
+                            </div>
+                            <div class="hidden sm:block text-right">
+                                <p class="text-[11px] font-black text-slate-800">{{ $item->avg_latest_weight !== null ? number_format($item->avg_latest_weight, 1) : '-' }}kg</p>
+                                <p class="text-[11px] font-bold text-slate-400">{{ $item->avg_latest_height !== null ? number_format($item->avg_latest_height, 1) : '-' }}cm</p>
                             </div>
                         </div>
                     @empty
-                        <div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+                        <div class="py-12 text-center text-sm font-bold text-slate-300">
                             Belum ada data agregat.
                         </div>
                     @endforelse
@@ -175,41 +158,60 @@
         </section>
     @endif
 
-    <section class="card p-6">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section class="card border-none p-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <p class="text-sm text-slate-500">Aktivitas terbaru</p>
-                <h3 class="text-xl font-bold text-slate-900">Pengukuran terakhir</h3>
+                <h3 class="text-xl font-black tracking-tight text-slate-800">Aktivitas Terkini</h3>
+                <p class="mt-1 text-sm font-medium text-slate-400">Data pengukuran terbaru yang masuk ke sistem.</p>
             </div>
-            <a href="{{ route('measurements.index') }}" class="btn-secondary">Lihat semua</a>
+            <a href="{{ route('measurements.index') }}" class="btn-secondary px-6">Selengkapnya</a>
         </div>
 
-        <div class="mt-6 overflow-x-auto">
-            <table class="min-w-full text-left text-sm">
-                <thead class="text-slate-400">
+        <div class="mt-8 overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <tr>
-                        <th class="pb-3 font-medium">Anak</th>
-                        <th class="pb-3 font-medium">Berat</th>
-                        <th class="pb-3 font-medium">Tinggi</th>
-                        <th class="pb-3 font-medium">Sumber</th>
+                        <th class="pb-4 font-black">Anak</th>
+                        <th class="pb-4 font-black">Parameter</th>
+                        <th class="pb-4 font-black">Sumber</th>
+                        <th class="pb-4 font-black">Waktu</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-50">
                     @forelse ($latestMeasurements as $measurement)
-                        <tr>
-                            <td class="py-4">
-                                <p class="font-semibold text-slate-800">{{ $measurement->child->child_name }}</p>
-                                <p class="text-xs text-slate-500">{{ $measurement->measured_at->format('d M Y H:i') }}</p>
+                        <tr class="group transition-colors hover:bg-slate-50/50">
+                            <td class="py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 font-black text-brand-600 transition-colors group-hover:bg-brand-600 group-hover:text-white">
+                                        {{ substr($measurement->child->child_name, 0, 1) }}
+                                    </div>
+                                    <p class="font-black text-slate-800">{{ $measurement->child->child_name }}</p>
+                                </div>
                             </td>
-                            <td class="py-4">{{ $measurement->weight_kg }} kg</td>
-                            <td class="py-4">{{ $measurement->height_cm }} cm</td>
-                            <td class="py-4">
-                                <span class="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-semibold uppercase text-slate-600">{{ $measurement->source }}</span>
+                            <td class="py-5">
+                                <div class="flex gap-4">
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase">Berat</p>
+                                        <p class="font-bold text-slate-700">{{ $measurement->weight_kg }} kg</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase">Tinggi</p>
+                                        <p class="font-bold text-slate-700">{{ $measurement->height_cm }} cm</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-5">
+                                <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter text-slate-600">
+                                    {{ $measurement->source }}
+                                </span>
+                            </td>
+                            <td class="py-5 text-xs font-bold text-slate-400">
+                                {{ $measurement->measured_at->diffForHumans() }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="py-6 text-center text-slate-500">Belum ada data pengukuran.</td>
+                            <td colspan="4" class="py-12 text-center font-bold text-slate-300">Belum ada data pengukuran.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -221,214 +223,120 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        new Chart(document.getElementById('monthlyTrendChart'), {
-            type: 'line',
-            data: {
-                labels: @json($monthlyTrend['labels']),
-                datasets: [
-                    {
-                        label: 'Indeks Pemantauan (%)',
-                        data: @json($monthlyTrend['monitoringIndexes']),
-                        yAxisID: 'y',
-                        borderColor: 'rgba(13, 148, 136, 1)',
-                        backgroundColor: 'rgba(13, 148, 136, 0.14)',
-                        fill: true,
-                        tension: 0.35,
-                        pointRadius: 4,
-                        pointHoverRadius: 5,
-                    },
-                    {
-                        label: 'Jumlah Pengukuran',
-                        data: @json($monthlyTrend['measurementCounts']),
-                        yAxisID: 'y1',
-                        borderColor: 'rgba(8, 145, 178, 1)',
-                        backgroundColor: 'rgba(8, 145, 178, 0.18)',
-                        tension: 0.35,
-                        pointRadius: 3,
-                    },
-                    {
-                        label: 'Anak Terpantau',
-                        data: @json($monthlyTrend['measuredChildrenCounts']),
-                        yAxisID: 'y1',
-                        borderColor: 'rgba(245, 158, 11, 1)',
-                        backgroundColor: 'rgba(245, 158, 11, 0.18)',
-                        tension: 0.35,
-                        pointRadius: 3,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 14,
-                            color: '#475569',
-                        }
-                    },
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: '#64748b',
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            color: '#64748b',
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.12)',
-                        },
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        ticks: {
-                            color: '#64748b',
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    }
-                }
-            }
-        });
-    </script>
-
-    @if (auth()->user()->isAdmin() && $posyanduAggregate->isNotEmpty())
-        <script>
-            new Chart(document.getElementById('posyanduAggregateChart'), {
+        const ctxTrend = document.getElementById('monthlyTrendChart');
+        if (ctxTrend) {
+            new Chart(ctxTrend, {
+                type: 'line',
                 data: {
-                    labels: @json($posyanduChart['labels']),
+                    labels: @json($monthlyTrend['labels']),
                     datasets: [
                         {
-                            type: 'bar',
-                            label: 'Pengukuran Bulan Ini',
-                            data: @json($posyanduChart['measurements']),
-                            backgroundColor: 'rgba(8, 145, 178, 0.72)',
-                            borderRadius: 10,
-                            barThickness: 24,
-                            maxBarThickness: 28,
-                            yAxisID: 'y1',
+                            label: 'Indeks (%)',
+                            data: @json($monthlyTrend['monitoringIndexes']),
+                            yAxisID: 'y',
+                            borderColor: '#0e8ce9',
+                            backgroundColor: 'rgba(14, 140, 233, 0.08)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#0e8ce9',
+                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderWidth: 3,
                         },
                         {
-                            type: 'line',
-                            label: 'Indeks Pemantauan (%)',
-                            data: @json($posyanduChart['monitoringIndexes']),
-                            borderColor: 'rgba(13, 148, 136, 1)',
-                            backgroundColor: 'rgba(13, 148, 136, 0.16)',
-                            tension: 0.35,
-                            fill: false,
-                            pointRadius: 4,
-                            pointHoverRadius: 5,
-                            borderWidth: 3,
-                            yAxisID: 'y',
+                            label: 'Pengukuran',
+                            data: @json($monthlyTrend['measurementCounts']),
+                            yAxisID: 'y1',
+                            borderColor: '#6366f1',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0,
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 14,
-                                color: '#475569',
-                            }
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: '#0f172a',
-                            titleColor: '#f8fafc',
-                            bodyColor: '#e2e8f0',
                             padding: 12,
+                            titleFont: { size: 12, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            cornerRadius: 12,
+                            displayColors: false
                         }
                     },
                     scales: {
                         x: {
-                            ticks: {
-                                color: '#64748b',
-                                maxRotation: 0,
-                                minRotation: 0,
-                                callback: function(value) {
-                                    const label = this.getLabelForValue(value);
-                                    if (! label) {
-                                        return '';
-                                    }
-
-                                    if (label.length <= 14) {
-                                        return label;
-                                    }
-
-                                    const words = label.split(' ');
-                                    const lines = [];
-                                    let current = '';
-
-                                    words.forEach(function(word) {
-                                        const next = current ? current + ' ' + word : word;
-
-                                        if (next.length > 14) {
-                                            if (current) {
-                                                lines.push(current);
-                                            }
-                                            current = word;
-                                        } else {
-                                            current = next;
-                                        }
-                                    });
-
-                                    if (current) {
-                                        lines.push(current);
-                                    }
-
-                                    return lines;
-                                }
-                            },
-                            grid: {
-                                display: false,
-                            },
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '600' }, color: '#94a3b8' }
                         },
                         y: {
                             beginAtZero: true,
                             max: 100,
-                            ticks: {
-                                color: '#64748b',
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.12)',
-                            },
+                            grid: { color: '#f1f5f9' },
+                            ticks: { font: { size: 11, weight: '600' }, color: '#94a3b8', callback: v => v + '%' }
                         },
                         y1: {
                             beginAtZero: true,
                             position: 'right',
-                            ticks: {
-                                color: '#64748b',
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            },
+                            display: false
                         }
                     }
                 }
             });
+        }
+    </script>
+
+    @if (auth()->user()->isAdmin() && $posyanduAggregate->isNotEmpty())
+        <script>
+            const ctxPosyandu = document.getElementById('posyanduAggregateChart');
+            if (ctxPosyandu) {
+                new Chart(ctxPosyandu, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($posyanduChart['labels']),
+                        datasets: [
+                            {
+                                label: 'Pengukuran',
+                                data: @json($posyanduChart['measurements']),
+                                backgroundColor: '#0e8ce9',
+                                borderRadius: 12,
+                                barThickness: 20,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#0f172a',
+                                padding: 12,
+                                cornerRadius: 12,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 10, weight: '600' }, color: '#94a3b8' }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#f1f5f9' },
+                                ticks: { font: { size: 10, weight: '600' }, color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
         </script>
     @endif
 @endpush

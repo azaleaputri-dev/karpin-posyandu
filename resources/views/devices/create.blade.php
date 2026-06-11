@@ -3,9 +3,9 @@
 @section('content')
     <section class="card p-6">
         @include('partials.page-header', [
-            'eyebrow' => 'Tambah perangkat',
-            'title' => 'Tambah Perangkat IoT',
-            'description' => 'Registrasikan perangkat baru dan siapkan token aksesnya.',
+            'eyebrow' => 'Tambah kartu',
+            'title' => 'Tambah Kartu RFID',
+            'description' => 'Registrasikan kartu RFID baru dan siapkan token sinkronisasinya.',
         ])
 
         <form action="{{ route('devices.store') }}" method="POST" class="mt-6 space-y-6">

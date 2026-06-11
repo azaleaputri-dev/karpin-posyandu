@@ -3,9 +3,9 @@
 @section('content')
     <section class="card p-6">
         @include('partials.page-header', [
-            'eyebrow' => 'Perbarui perangkat',
-            'title' => 'Edit Perangkat IoT',
-            'description' => 'Sesuaikan lokasi, status, dan identitas perangkat.',
+            'eyebrow' => 'Perbarui kartu',
+            'title' => 'Edit Kartu RFID',
+            'description' => 'Sesuaikan lokasi, status, dan identitas kartu RFID.',
         ])
 
         <form action="{{ route('devices.update', $device) }}" method="POST" class="mt-6 space-y-6">

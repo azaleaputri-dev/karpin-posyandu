@@ -1,56 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    <section class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div class="space-y-6">
-            <div class="card p-6">
+            <div class="card border-none p-8">
                 @include('partials.page-header', [
-                    'eyebrow' => 'Detail anak',
+                    'eyebrow' => 'Detail Profil Anak',
                     'title' => $child->child_name,
-                    'description' => 'Pantau pertumbuhan berat dan tinggi badan anak dari riwayat pengukuran.',
-                    'action' => new \Illuminate\Support\HtmlString('<div class="flex gap-3"><a href="' . route('children.export-pdf', $child) . '" class="btn-primary">Export PDF</a><a href="' . route('children.index') . '" class="btn-secondary">Kembali</a></div>'),
+                    'description' => 'Pantau pertumbuhan berat dan tinggi badan anak secara real-time.',
+                    'action' => new \Illuminate\Support\HtmlString('<div class="flex gap-3"><a href="' . route('children.export-pdf', $child) . '" class="btn-secondary px-6">Export PDF</a><a href="' . route('children.index') . '" class="btn-secondary px-6">Kembali</a></div>'),
                 ])
 
-                <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    <div class="rounded-3xl bg-slate-50 p-4">
-                        <p class="text-sm text-slate-500">Posyandu</p>
-                        <p class="mt-2 font-bold text-slate-900">{{ $child->posyandu->name }}</p>
+                <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="rounded-3xl bg-slate-50 p-5 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Posyandu</p>
+                        <p class="mt-2 font-black text-slate-800">{{ $child->posyandu->name }}</p>
                     </div>
-                    <div class="rounded-3xl bg-slate-50 p-4">
-                        <p class="text-sm text-slate-500">Usia</p>
-                        <p class="mt-2 font-bold text-slate-900">{{ $child->birth_date->age }} tahun</p>
+                    <div class="rounded-3xl bg-slate-50 p-5 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Usia Saat Ini</p>
+                        <p class="mt-2 font-black text-slate-800">{{ $child->birth_date->age }} Tahun</p>
                     </div>
-                    <div class="rounded-3xl bg-slate-50 p-4">
-                        <p class="text-sm text-slate-500">Ibu</p>
-                        <p class="mt-2 font-bold text-slate-900">{{ $child->mother_name }}</p>
+                    <div class="rounded-3xl bg-slate-50 p-5 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nama Ibu</p>
+                        <p class="mt-2 font-black text-slate-800">{{ $child->mother_name }}</p>
                     </div>
-                    <div class="rounded-3xl bg-slate-50 p-4">
-                        <p class="text-sm text-slate-500">NIK</p>
-                        <p class="mt-2 font-bold text-slate-900">{{ $child->nik ?: '-' }}</p>
+                    <div class="rounded-3xl bg-slate-50 p-5 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nomor NIK</p>
+                        <p class="mt-2 font-black text-slate-800">{{ $child->nik ?: '-' }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="card p-6">
-                <div class="flex items-center justify-between">
+            <div class="card border-none p-8">
+                <div class="flex items-center justify-between gap-4">
                     <div>
-                        <p class="text-sm text-slate-500">Grafik pertumbuhan</p>
-                        <h3 class="text-xl font-bold text-slate-900">Berat dan tinggi dari waktu ke waktu</h3>
+                        <h3 class="text-xl font-black tracking-tight text-slate-800">Grafik Pertumbuhan</h3>
+                        <p class="text-sm font-medium text-slate-400">Visualisasi tren berat dan tinggi badan.</p>
                     </div>
-                    <a href="{{ route('measurements.create') }}" class="btn-primary">Tambah Pengukuran</a>
+                    @unless (auth()->user()->isAdmin())
+                        <a href="{{ route('measurements.create') }}" class="btn-primary px-6">Tambah Pengukuran</a>
+                    @endunless
                 </div>
 
                 @if ($summary['total_measurements'] > 0)
-                    <div class="mt-6 grid gap-6">
-                        <div class="rounded-3xl border border-slate-200 bg-white p-4">
-                            <canvas id="weightChart" height="120"></canvas>
+                    <div class="mt-8 space-y-8">
+                        <div class="rounded-[2rem] bg-slate-50 p-6 ring-1 ring-black/5">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-brand-600 mb-4 ml-2">Tren Berat Badan (kg)</p>
+                            <div class="h-[240px] w-full">
+                                <canvas id="weightChart"></canvas>
+                            </div>
                         </div>
-                        <div class="rounded-3xl border border-slate-200 bg-white p-4">
-                            <canvas id="heightChart" height="120"></canvas>
+                        <div class="rounded-[2rem] bg-slate-50 p-6 ring-1 ring-black/5">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-indigo-600 mb-4 ml-2">Tren Tinggi Badan (cm)</p>
+                            <div class="h-[240px] w-full">
+                                <canvas id="heightChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 @else
-                    <div class="mt-6 rounded-3xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+                    <div class="mt-8 flex h-60 items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-100 p-8 text-center text-sm font-bold text-slate-300">
                         Belum ada riwayat pengukuran untuk anak ini.
                     </div>
                 @endif
@@ -58,84 +66,87 @@
         </div>
 
         <div class="space-y-6">
-            <div class="card p-6">
-                <p class="text-sm text-slate-500">Ringkasan pertumbuhan</p>
-                <h3 class="text-xl font-bold text-slate-900">Snapshot terkini</h3>
-                <div class="mt-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                    <div class="flex items-center justify-between gap-4">
+            <div class="card border-none p-8">
+                <h3 class="text-xl font-black tracking-tight text-slate-800">Analisis Gizi</h3>
+                <div class="mt-6 rounded-[2rem] bg-gradient-to-br from-brand-600 to-indigo-900 p-8 text-white shadow-xl shadow-brand-900/10">
+                    <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-sm text-slate-500">Status gizi sederhana</p>
-                            <p class="mt-1 text-xl font-bold text-slate-900">{{ $nutritionStatus['overall'] }}</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-brand-200">Status Keseluruhan</p>
+                            <p class="mt-2 text-3xl font-black tracking-tight">{{ $nutritionStatus['overall'] }}</p>
                         </div>
-                        <span class="rounded-full px-4 py-2 text-sm font-semibold {{ $nutritionStatus['badge'] }}">
-                            {{ $nutritionStatus['overall'] }}
-                        </span>
-                    </div>
-                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                        <div class="rounded-2xl bg-white p-3">
-                            <p class="text-sm text-slate-500">Indikator berat</p>
-                            <p class="mt-1 font-semibold text-slate-900">{{ $nutritionStatus['weight'] ?? '-' }}</p>
-                        </div>
-                        <div class="rounded-2xl bg-white p-3">
-                            <p class="text-sm text-slate-500">Indikator tinggi</p>
-                            <p class="mt-1 font-semibold text-slate-900">{{ $nutritionStatus['height'] ?? '-' }}</p>
+                        <div class="rounded-full bg-white/20 p-4 backdrop-blur-md">
+                            📊
                         </div>
                     </div>
-                    <p class="mt-4 text-xs leading-6 text-slate-500">{{ $nutritionStatus['note'] }}</p>
+                    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+                        <div class="rounded-2xl bg-white/10 p-4 backdrop-blur-md">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-brand-100">Indikator Berat</p>
+                            <p class="mt-1 font-black">{{ $nutritionStatus['weight'] ?? '-' }}</p>
+                        </div>
+                        <div class="rounded-2xl bg-white/10 p-4 backdrop-blur-md">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-brand-100">Indikator Tinggi</p>
+                            <p class="mt-1 font-black">{{ $nutritionStatus['height'] ?? '-' }}</p>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-xs font-medium leading-relaxed text-brand-100/70">{{ $nutritionStatus['note'] }}</p>
                 </div>
-                <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                    <div class="rounded-3xl bg-emerald-50 p-4">
-                        <p class="text-sm text-emerald-700">Berat terakhir</p>
-                        <p class="mt-2 text-3xl font-black text-emerald-900">{{ $summary['latest_weight'] !== null ? $summary['latest_weight'] . ' kg' : '-' }}</p>
+
+                <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-3xl bg-slate-50 p-6 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Berat Terakhir</p>
+                        <p class="mt-2 text-3xl font-black text-slate-800">{{ $summary['latest_weight'] !== null ? $summary['latest_weight'] . ' kg' : '-' }}</p>
+                        <p class="mt-1 text-[10px] font-bold {{ ($summary['weight_gain'] ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500' }}">
+                            {{ ($summary['weight_gain'] ?? 0) >= 0 ? '+' : '' }}{{ number_format($summary['weight_gain'] ?? 0, 2) }} kg dari awal
+                        </p>
                     </div>
-                    <div class="rounded-3xl bg-cyan-50 p-4">
-                        <p class="text-sm text-cyan-700">Tinggi terakhir</p>
-                        <p class="mt-2 text-3xl font-black text-cyan-900">{{ $summary['latest_height'] !== null ? $summary['latest_height'] . ' cm' : '-' }}</p>
-                    </div>
-                    <div class="rounded-3xl bg-amber-50 p-4">
-                        <p class="text-sm text-amber-700">Kenaikan berat</p>
-                        <p class="mt-2 text-3xl font-black text-amber-900">{{ $summary['weight_gain'] !== null ? number_format($summary['weight_gain'], 2) . ' kg' : '-' }}</p>
-                    </div>
-                    <div class="rounded-3xl bg-violet-50 p-4">
-                        <p class="text-sm text-violet-700">Kenaikan tinggi</p>
-                        <p class="mt-2 text-3xl font-black text-violet-900">{{ $summary['height_gain'] !== null ? number_format($summary['height_gain'], 2) . ' cm' : '-' }}</p>
+                    <div class="rounded-3xl bg-slate-50 p-6 ring-1 ring-black/5">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tinggi Terakhir</p>
+                        <p class="mt-2 text-3xl font-black text-slate-800">{{ $summary['latest_height'] !== null ? $summary['latest_height'] . ' cm' : '-' }}</p>
+                        <p class="mt-1 text-[10px] font-bold {{ ($summary['height_gain'] ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500' }}">
+                            {{ ($summary['height_gain'] ?? 0) >= 0 ? '+' : '' }}{{ number_format($summary['height_gain'] ?? 0, 2) }} cm dari awal
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <div class="card p-6">
-                <p class="text-sm text-slate-500">Timeline pengukuran</p>
-                <h3 class="text-xl font-bold text-slate-900">Riwayat lengkap</h3>
-                <div class="mt-5 space-y-3">
+            <div class="card border-none p-8">
+                <h3 class="text-xl font-black tracking-tight text-slate-800">Timeline Riwayat</h3>
+                <div class="mt-6 space-y-4">
                     @forelse ($measurements as $measurement)
-                        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                        <div class="group relative rounded-3xl border border-slate-50 bg-slate-50/50 p-6 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50">
                             <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <p class="font-semibold text-slate-900">{{ $measurement->measured_at->format('d M Y H:i') }}</p>
-                                    <p class="mt-1 text-xs text-slate-500">{{ optional($measurement->device)->device_name ?? 'Manual input' }} | {{ $measurement->source }}</p>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-black text-slate-800">{{ $measurement->measured_at->format('d M Y') }}</p>
+                                    <p class="text-[10px] font-bold uppercase tracking-tight text-slate-400">
+                                        {{ optional($measurement->device)->device_name ?? 'Input Manual' }} • {{ $measurement->measured_at->format('H:i') }}
+                                    </p>
                                 </div>
-                                <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600">{{ $measurement->source }}</span>
+                                <span class="rounded-lg bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter text-slate-500 shadow-sm">
+                                    {{ $measurement->source }}
+                                </span>
                             </div>
-                            <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
-                                <div class="rounded-2xl bg-white p-3">
-                                    <p class="text-slate-500">Berat</p>
-                                    <p class="mt-1 font-bold text-slate-900">{{ $measurement->weight_kg }} kg</p>
+                            <div class="mt-6 grid grid-cols-3 gap-3">
+                                <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400">Berat</p>
+                                    <p class="mt-1 font-black text-brand-600">{{ $measurement->weight_kg }}kg</p>
                                 </div>
-                                <div class="rounded-2xl bg-white p-3">
-                                    <p class="text-slate-500">Tinggi</p>
-                                    <p class="mt-1 font-bold text-slate-900">{{ $measurement->height_cm }} cm</p>
+                                <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400">Tinggi</p>
+                                    <p class="mt-1 font-black text-indigo-600">{{ $measurement->height_cm }}cm</p>
                                 </div>
-                                <div class="rounded-2xl bg-white p-3">
-                                    <p class="text-slate-500">Suhu</p>
-                                    <p class="mt-1 font-bold text-slate-900">{{ $measurement->temperature_c !== null ? $measurement->temperature_c . ' C' : '-' }}</p>
+                                <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400">Suhu</p>
+                                    <p class="mt-1 font-black text-slate-800">{{ $measurement->temperature_c !== null ? $measurement->temperature_c . '°' : '-' }}</p>
                                 </div>
                             </div>
                             @if ($measurement->notes)
-                                <p class="mt-3 text-sm text-slate-600">{{ $measurement->notes }}</p>
+                                <div class="mt-4 rounded-xl bg-slate-100/50 p-3 text-xs font-medium italic text-slate-500">
+                                    "{{ $measurement->notes }}"
+                                </div>
                             @endif
                         </div>
                     @empty
-                        <div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+                        <div class="py-12 text-center text-sm font-bold text-slate-300">
                             Riwayat pengukuran masih kosong.
                         </div>
                     @endforelse
@@ -156,27 +167,25 @@
             const sharedOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: {
-                        display: false,
-                    },
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        padding: 12,
+                        cornerRadius: 12,
+                        titleFont: { size: 12, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                    }
                 },
                 scales: {
                     x: {
-                        ticks: {
-                            color: '#64748b',
-                        },
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.12)',
-                        },
+                        grid: { display: false },
+                        ticks: { font: { size: 10, weight: '600' }, color: '#94a3b8' }
                     },
                     y: {
-                        ticks: {
-                            color: '#64748b',
-                        },
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.12)',
-                        },
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { size: 10, weight: '600' }, color: '#94a3b8' }
                     },
                 },
             };
@@ -188,12 +197,15 @@
                     datasets: [{
                         label: 'Berat Badan',
                         data: weightData,
-                        borderColor: '#059669',
-                        backgroundColor: 'rgba(5, 150, 105, 0.15)',
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#059669',
-                        tension: 0.35,
+                        borderColor: '#0e8ce9',
+                        backgroundColor: 'rgba(14, 140, 233, 0.08)',
+                        borderWidth: 4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#0e8ce9',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3,
+                        tension: 0.4,
                         fill: true,
                     }],
                 },
@@ -207,12 +219,15 @@
                     datasets: [{
                         label: 'Tinggi Badan',
                         data: heightData,
-                        borderColor: '#0891b2',
-                        backgroundColor: 'rgba(8, 145, 178, 0.15)',
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#0891b2',
-                        tension: 0.35,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                        borderWidth: 4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#6366f1',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3,
+                        tension: 0.4,
                         fill: true,
                     }],
                 },

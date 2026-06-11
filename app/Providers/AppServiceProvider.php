@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                     ['label' => 'Posyandu', 'route' => 'posyandus.index'],
                 ]);
                 $items[] = ['label' => 'Manajemen User', 'route' => 'users.index'];
-                $items[] = ['label' => 'Perangkat IoT', 'route' => 'devices.index'];
+                $items[] = ['label' => 'Kartu RFID', 'route' => 'devices.index'];
             }
 
             $view->with('navItems', $items);

@@ -1,9 +1,9 @@
 @if ($paginator->hasPages())
-    <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-col gap-4 border-t border-slate-50 pt-6 text-[11px] font-black uppercase tracking-widest text-slate-400 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            Menampilkan {{ $paginator->firstItem() ?? 0 }} sampai {{ $paginator->lastItem() ?? 0 }} dari {{ $paginator->total() }} data
+            Showing <span class="text-slate-800">{{ $paginator->firstItem() ?? 0 }}</span> to <span class="text-slate-800">{{ $paginator->lastItem() ?? 0 }}</span> of <span class="text-slate-800">{{ $paginator->total() }}</span> results
         </div>
-        <div>
+        <div class="pagination-links">
             {{ $paginator->links() }}
         </div>
     </div>

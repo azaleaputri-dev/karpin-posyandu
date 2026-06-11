@@ -55,7 +55,7 @@ class DeviceController extends Controller
 
         Device::create($data);
 
-        return redirect()->route('devices.index')->with('status', 'Perangkat IoT berhasil ditambahkan.');
+        return redirect()->route('devices.index')->with('status', 'Kartu RFID berhasil ditambahkan.');
     }
 
     /**
@@ -93,7 +93,7 @@ class DeviceController extends Controller
 
         $device->update($data);
 
-        return redirect()->route('devices.index')->with('status', 'Perangkat IoT berhasil diperbarui.');
+        return redirect()->route('devices.index')->with('status', 'Kartu RFID berhasil diperbarui.');
     }
 
     /**
@@ -106,6 +106,6 @@ class DeviceController extends Controller
     {
         $device->delete();
 
-        return redirect()->route('devices.index')->with('status', 'Perangkat IoT berhasil dihapus.');
+        return redirect()->route('devices.index')->with('status', 'Kartu RFID berhasil dihapus.');
     }
 }

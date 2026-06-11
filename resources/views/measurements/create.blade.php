@@ -5,7 +5,7 @@
         @include('partials.page-header', [
             'eyebrow' => 'Tambah data',
             'title' => 'Tambah Pengukuran',
-            'description' => 'Catat hasil timbang dan ukur terbaru.',
+            'description' => 'Catat hasil timbang dan ukur terbaru, dengan opsi identitas dari kartu RFID.',
         ])
 
         <form action="{{ route('measurements.store') }}" method="POST" class="mt-6 space-y-6">

@@ -6,52 +6,67 @@
     <title>{{ config('app.name') }}</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body>
-    <div class="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(20,184,166,0.15),_transparent_35%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)]">
-        <div class="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-4 py-6 lg:flex-row lg:px-6">
-            <aside class="card w-full overflow-hidden lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)] lg:w-72">
-                <div class="bg-gradient-to-br from-teal-600 via-cyan-600 to-slate-900 p-6 text-white">
-                    <p class="text-xs uppercase tracking-[0.35em] text-teal-100">{{ auth()->user()->isAdmin() ? 'Admin Puskesmas' : 'Petugas Posyandu' }}</p>
-                    <h1 class="mt-3 text-2xl font-bold leading-tight">{{ config('app.name') }}</h1>
-                    <p class="mt-3 text-sm text-cyan-50">{{ auth()->user()->isAdmin() ? 'Monitoring lintas posyandu dan perangkat IoT di wilayah puskesmas.' : 'Input data balita dan pengukuran untuk posyandu yang Anda tangani.' }}</p>
-                </div>
-                <nav class="space-y-2 p-4">
-                    @foreach ($navItems as $item)
-                        <a href="{{ route($item['route']) }}" class="{{ request()->routeIs($item['route']) ? 'bg-teal-600 text-white shadow-glow' : 'text-slate-600 hover:bg-slate-100' }} block rounded-2xl px-4 py-3 text-sm font-semibold transition">
-                            {{ $item['label'] }}
-                        </a>
-                    @endforeach
-                </nav>
-            </aside>
+<body class="overflow-x-hidden bg-slate-100 text-slate-900">
+    <div class="min-h-screen lg:flex">
+        <aside class="w-full shrink-0 bg-slate-900 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-col">
+            <div class="flex h-[6rem] flex-col justify-center bg-brand-600 px-6 py-3 lg:h-[6.5rem]">
+                <p class="text-[9px] font-bold uppercase tracking-[0.26em] text-brand-100/80">{{ auth()->user()->isAdmin() ? 'Administrator' : 'Health Worker' }}</p>
+                <h1 class="mt-1.5 text-[1.9rem] font-black leading-[0.94] tracking-tight text-white lg:text-[2.05rem]">Kartu Pintar Posyandu</h1>
+            </div>
 
-            <main class="flex-1 space-y-6">
-                <header class="card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm text-slate-500">Selamat datang</p>
-                        <h2 class="text-2xl font-bold text-slate-900">{{ auth()->user()->name }}</h2>
-                        <p class="mt-1 text-sm text-slate-500">{{ auth()->user()->isAdmin() ? 'Akses monitoring puskesmas' : 'Petugas ' . optional(auth()->user()->posyandu)->name }}</p>
+            <nav class="space-y-1 overflow-x-auto px-4 py-5 lg:flex-1 lg:overflow-y-auto lg:overflow-x-hidden">
+                @foreach ($navItems as $item)
+                    <a href="{{ route($item['route']) }}" class="{{ request()->routeIs($item['route']) ? 'bg-brand-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }} group flex items-center rounded-xl px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition-colors duration-200">
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
+            </nav>
+
+            <div class="border-t border-white/10 px-4 py-4 lg:mt-auto">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-rose-300 transition-colors hover:bg-white/5 hover:text-rose-200">
+                        Keluar Sesi
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="flex min-w-0 flex-1 flex-col">
+            <header class="animate-float-in flex h-[6rem] shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 py-4 lg:h-[6.5rem] lg:px-8">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-base font-black text-brand-600">
+                        {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn-secondary">Keluar</button>
-                    </form>
-                </header>
+                    <div>
+                        <h2 class="text-[1.05rem] font-black leading-none tracking-tight text-slate-900">{{ auth()->user()->name }}</h2>
+                        <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ auth()->user()->isAdmin() ? 'Puskesmas Admin' : optional(auth()->user()->posyandu)->name }}</p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-600">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Sistem Aktif
+                </span>
+            </header>
 
+            <div class="animate-float-in-slow animate-delay-2 flex-1 min-w-0 space-y-6 p-6 lg:p-8">
                 @if (session('status'))
-                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                    <div class="flex items-center gap-3 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-bold text-brand-700">
+                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-[11px] text-white">✓</span>
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                        <p class="font-semibold">Periksa kembali input yang belum valid.</p>
+                    <div class="flex items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-[10px] text-white">!</span>
+                        Periksa kembali input yang belum valid.
                     </div>
                 @endif
 
                 @yield('content')
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 </body>
 @stack('scripts')
