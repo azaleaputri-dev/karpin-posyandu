@@ -25,7 +25,6 @@
                 <h1 class="mt-10 text-5xl font-black leading-[1.1] tracking-tighter">Monitoring Tumbuh Kembang Lebih Akurat.</h1>
                 <p class="mt-6 text-lg font-medium leading-relaxed text-brand-100/80">Platform terintegrasi untuk pemantauan data kesehatan balita secara real-time dan transparan.</p>
             </div>
-
             <div class="relative z-10 space-y-6">
                 <div class="flex items-center gap-4 group cursor-default">
                     <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 transition-all group-hover:bg-white/20">
