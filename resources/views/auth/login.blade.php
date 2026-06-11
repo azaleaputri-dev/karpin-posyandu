@@ -24,7 +24,7 @@
                     <p class="mt-2 text-2xl font-bold">Database Integration</p>
                 </div>
                 <div class="rounded-3xl border border-white/15 bg-white/10 p-5">
-                    <p class="text-sm text-teal-100">With</p>
+                    <p class="text-sm text-teal-100">Users</p>
                     <p class="mt-2 text-2xl font-bold">Secure Access</p>
                 </div>
             </div>
