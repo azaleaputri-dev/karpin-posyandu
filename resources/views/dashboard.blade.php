@@ -63,7 +63,7 @@
         @endforeach
     </section>
 
-    <section class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+    <section class="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
         <div class="card border-none p-8">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -82,26 +82,48 @@
 
         <div class="card border-none p-8">
             <h3 class="text-xl font-black tracking-tight text-slate-800">Performa</h3>
+            <p class="mt-1 text-sm font-medium text-slate-400">Ringkasan capaian pemantauan dan kualitas pencatatan bulan ini.</p>
             <div class="mt-6 space-y-4">
                 <div class="rounded-[2rem] bg-slate-50 p-6 ring-1 ring-black/5">
-                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Anak Terpantau</p>
-                    <p class="mt-2 text-5xl font-black tracking-tighter text-slate-800">{{ $developmentSummary['children_measured_this_month'] }}</p>
-                    <p class="mt-2 text-[11px] font-bold text-slate-400">dari <span class="text-slate-600">{{ $stats['children'] }}</span> anak terdaftar</p>
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Anak Terpantau</p>
+                            <p class="mt-2 text-5xl font-black tracking-tighter text-slate-800">{{ $developmentSummary['children_measured_this_month'] }}</p>
+                            <p class="mt-2 text-[11px] font-bold text-slate-400">dari <span class="text-slate-600">{{ $stats['children'] }}</span> anak terdaftar</p>
+                        </div>
+                        <div class="rounded-2xl bg-white px-4 py-3 text-right ring-1 ring-slate-200">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Cakupan</p>
+                            <p class="mt-1 text-2xl font-black text-slate-800">{{ number_format($developmentSummary['monitoring_index'], 1) }}%</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-slate-200">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Pengukuran Bulan Ini</p>
+                            <p class="mt-1 text-lg font-black text-slate-800">{{ number_format($developmentSummary['measurements_this_month']) }}</p>
+                        </div>
+                        <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-slate-200">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Periode</p>
+                            <p class="mt-1 text-lg font-black text-slate-800">{{ $developmentSummary['month_label'] }}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="rounded-[2rem] bg-emerald-50 p-6 ring-1 ring-emerald-500/10">
                         <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Avg Weight</p>
                         <p class="mt-2 text-2xl font-black text-emerald-900">{{ $developmentSummary['avg_latest_weight'] !== null ? number_format($developmentSummary['avg_latest_weight'], 1) . ' kg' : '-' }}</p>
+                        <p class="mt-2 text-[11px] font-bold text-emerald-800/70">Rerata berat dari catatan terakhir tiap anak yang sudah dipantau.</p>
                     </div>
                     <div class="rounded-[2rem] bg-brand-50 p-6 ring-1 ring-brand-500/10">
                         <p class="text-[10px] font-black uppercase tracking-widest text-brand-600">Avg Height</p>
                         <p class="mt-2 text-2xl font-black text-brand-900">{{ $developmentSummary['avg_latest_height'] !== null ? number_format($developmentSummary['avg_latest_height'], 1) . ' cm' : '-' }}</p>
+                        <p class="mt-2 text-[11px] font-bold text-brand-900/55">Rerata tinggi dari catatan terakhir tiap anak yang sudah dipantau.</p>
                     </div>
                 </div>
                 <div class="flex items-center justify-between rounded-[2rem] bg-slate-900 p-6 text-white">
                     <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Riwayat</p>
                         <p class="mt-1 text-2xl font-black">{{ number_format($stats['measurements']) }}</p>
+                        <p class="mt-1 text-[11px] font-bold text-slate-400">Akumulasi seluruh catatan pengukuran yang tersimpan.</p>
                     </div>
                     <div class="rounded-xl bg-white/10 px-4 py-2 text-[10px] font-black uppercase">Pencatatan</div>
                 </div>

@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - {{ config('app.name') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon-rounded.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon-rounded.png') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="min-h-screen bg-slate-100 flex items-center justify-center p-6">
@@ -17,10 +19,10 @@
             
             <div class="relative z-10">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md">
-                        <span class="text-xl">📊</span>
+                    <div class="h-12 w-12 overflow-hidden rounded-full ring-2 ring-white/30 shadow-lg shadow-black/10">
+                        <img src="{{ asset('logo-posyandu-smart-card.jpeg') }}" alt="Logo Posyandu Smart Card" class="h-full w-full object-cover object-center">
                     </div>
-                    <span class="text-xs font-black uppercase tracking-[0.3em] text-brand-100">Smart Posyandu</span>
+                    <span class="text-xs font-black uppercase tracking-[0.3em] text-brand-100">Kartu Pintar Posyandu</span>
                 </div>
                 <h1 class="mt-10 text-5xl font-black leading-[1.1] tracking-tighter">Monitoring Tumbuh Kembang Lebih Akurat.</h1>
                 <p class="mt-6 text-lg font-medium leading-relaxed text-brand-100/80">Platform terintegrasi untuk pemantauan data kesehatan balita secara real-time dan transparan.</p>
@@ -98,11 +100,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="p-4 rounded-2xl bg-slate-50/50 ring-1 ring-black/5">
                             <p class="text-[9px] font-black text-slate-400 uppercase">Administrator</p>
-                            <p class="mt-1 text-xs font-black text-slate-700">admin12345</p>
+                            <p class="mt-1 text-xs font-black text-slate-700">admin@gmail.com</p>
+                            <p class="mt-1 text-[10px] font-bold text-slate-500">Password: admin12345</p>
                         </div>
                         <div class="p-4 rounded-2xl bg-slate-50/50 ring-1 ring-black/5">
                             <p class="text-[9px] font-black text-slate-400 uppercase">Petugas</p>
-                            <p class="mt-1 text-xs font-black text-slate-700">petugas12345</p>
+                            <p class="mt-1 text-xs font-black text-slate-700">petugas@gmail.com</p>
+                            <p class="mt-1 text-[10px] font-bold text-slate-500">Password: petugas12345</p>
                         </div>
                     </div>
                 </div>

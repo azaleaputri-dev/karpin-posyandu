@@ -1,6 +1,59 @@
 @extends('layouts.app')
 
 @section('content')
+    <section class="card border-none p-8" id="rfid-monitor" data-endpoint="{{ route('iot.latest-scan') }}" data-measurement-url="{{ route('measurements.create') }}" data-initial-scan-id="{{ $initialScanId }}">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h3 class="text-xl font-black tracking-tight text-slate-800">Monitoring RFID Langsung</h3>
+                <p class="mt-1 text-sm font-medium text-slate-400">Tap kartu, lalu data anak langsung muncul di layar tanpa langkah tambahan.</p>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-black text-slate-500">
+                <span id="rfid-indicator" class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                <span id="rfid-connection-label">Menunggu perangkat</span>
+            </div>
+        </div>
+
+        <div id="rfid-empty" class="mt-6 border-2 border-dashed border-slate-200 p-8 text-center text-sm font-bold text-slate-400">
+            Belum ada kartu yang ditap.
+        </div>
+
+        <div id="rfid-result" class="mt-6 hidden grid gap-6 lg:grid-cols-[1fr_0.7fr]">
+            <div class="bg-slate-50 p-6 ring-1 ring-slate-200">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Anak Teridentifikasi</p>
+                        <h4 id="rfid-child-name" class="mt-2 text-2xl font-black text-slate-800"></h4>
+                        <p id="rfid-child-meta" class="mt-1 text-sm font-bold text-slate-500"></p>
+                    </div>
+                    <span id="rfid-status" class="bg-emerald-100 px-3 py-1.5 text-[10px] font-black uppercase text-emerald-700"></span>
+                </div>
+                <dl class="mt-5 grid gap-4 sm:grid-cols-3">
+                    <div><dt class="text-[10px] font-black uppercase text-slate-400">UID</dt><dd id="rfid-uid" class="mt-1 font-black text-slate-700"></dd></div>
+                    <div><dt class="text-[10px] font-black uppercase text-slate-400">Ibu</dt><dd id="rfid-mother" class="mt-1 font-black text-slate-700"></dd></div>
+                    <div><dt class="text-[10px] font-black uppercase text-slate-400">Posyandu</dt><dd id="rfid-posyandu" class="mt-1 font-black text-slate-700"></dd></div>
+                </dl>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a id="rfid-measurement-link" href="#" class="btn-primary inline-flex hidden">Lanjut Pengukuran</a>
+                    <a id="rfid-edit-link" href="#" class="btn-secondary inline-flex">Edit Data</a>
+                    <a id="rfid-child-link" href="#" class="btn-secondary inline-flex">Buka data anak</a>
+                    <form id="rfid-delete-form" action="#" method="POST" class="inline-flex" onsubmit="return confirm('Hapus data anak ini beserta riwayat pengukurannya?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-secondary text-rose-600 hover:border-rose-200 hover:bg-rose-50">Hapus</button>
+                    </form>
+                </div>
+            </div>
+            <div class="bg-slate-900 p-6 text-white">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Pengukuran Terakhir</p>
+                <div class="mt-5 grid grid-cols-2 gap-4">
+                    <div><p class="text-xs font-bold text-slate-400">Berat</p><p id="rfid-weight" class="mt-1 text-3xl font-black">-</p></div>
+                    <div><p class="text-xs font-bold text-slate-400">Tinggi</p><p id="rfid-height" class="mt-1 text-3xl font-black">-</p></div>
+                </div>
+                <p id="rfid-measured-at" class="mt-5 text-xs font-bold text-slate-400">Belum ada pengukuran.</p>
+            </div>
+        </div>
+    </section>
+
     <section class="card border-none p-8">
         @include('partials.page-header', [
             'eyebrow' => 'Riwayat Pengukuran',
@@ -113,3 +166,99 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        const rfidMonitor = document.getElementById('rfid-monitor');
+        let lastRfidScanId = Number(rfidMonitor.dataset.initialScanId || 0);
+
+        fetch('{{ route("iot.start-listener") }}', { headers: { 'Accept': 'application/json' } }).catch(() => {});
+
+        async function refreshRfidMonitor() {
+            const indicator = document.getElementById('rfid-indicator');
+            const connectionLabel = document.getElementById('rfid-connection-label');
+
+            try {
+                const response = await fetch(rfidMonitor.dataset.endpoint, {
+                    headers: { 'Accept': 'application/json' },
+                    cache: 'no-store'
+                });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                const payload = await response.json();
+                const monitor = payload.data || {};
+                const scan = monitor.id ? monitor : null;
+                const device = monitor.device;
+
+                if (device) {
+                    indicator.className = 'h-2.5 w-2.5 rounded-full bg-emerald-500';
+                    connectionLabel.textContent = device.last_seen_at_human
+                        ? `${device.device_name} terkoneksi · ${device.last_seen_at_human}`
+                        : `${device.device_name} terkoneksi`;
+                } else {
+                    indicator.className = 'h-2.5 w-2.5 rounded-full bg-amber-400';
+                    connectionLabel.textContent = 'Menunggu perangkat';
+                }
+
+                if (!scan || scan.id <= lastRfidScanId) return;
+                lastRfidScanId = scan.id;
+                const scanDevice = scan.device || device;
+                connectionLabel.textContent = scanDevice
+                    ? `${scanDevice.device_name} membaca kartu`
+                    : 'Kartu terbaca';
+                document.getElementById('rfid-empty').classList.add('hidden');
+                document.getElementById('rfid-result').classList.remove('hidden');
+                rfidMonitor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('rfid-uid').textContent = scan.rfid_uid;
+
+                if (!scan.child) {
+                    document.getElementById('rfid-child-name').textContent = 'Kartu belum terdaftar';
+                    document.getElementById('rfid-child-meta').textContent = 'Daftarkan UID ini pada data anak terlebih dahulu.';
+                    document.getElementById('rfid-status').textContent = 'Tidak dikenal';
+                    document.getElementById('rfid-status').className = 'bg-rose-100 px-3 py-1.5 text-[10px] font-black uppercase text-rose-700';
+                    document.getElementById('rfid-mother').textContent = '-';
+                    document.getElementById('rfid-posyandu').textContent = '-';
+                    document.getElementById('rfid-child-link').classList.add('hidden');
+                    document.getElementById('rfid-measurement-link').classList.add('hidden');
+                    document.getElementById('rfid-edit-link').classList.add('hidden');
+                    document.getElementById('rfid-delete-form').classList.add('hidden');
+                    document.getElementById('rfid-weight').textContent = '-';
+                    document.getElementById('rfid-height').textContent = '-';
+                    document.getElementById('rfid-measured-at').textContent = 'Belum ada pengukuran.';
+                    return;
+                }
+
+                document.getElementById('rfid-child-name').textContent = scan.child.child_name;
+                document.getElementById('rfid-child-meta').textContent = `${scan.child.gender === 'L' ? 'Laki-laki' : 'Perempuan'} | ${scan.child.age}`;
+                document.getElementById('rfid-status').textContent = 'Terdaftar';
+                document.getElementById('rfid-status').className = 'bg-emerald-100 px-3 py-1.5 text-[10px] font-black uppercase text-emerald-700';
+                document.getElementById('rfid-mother').textContent = scan.child.mother_name;
+                document.getElementById('rfid-posyandu').textContent = scan.child.posyandu || '-';
+
+                const childLink = document.getElementById('rfid-child-link');
+                childLink.href = scan.child.detail_url;
+                childLink.classList.remove('hidden');
+                const measurementLink = document.getElementById('rfid-measurement-link');
+                const scanDeviceId = scan.device && scan.device.id ? scan.device.id : (scanDevice && scanDevice.id ? scanDevice.id : '');
+                measurementLink.href = `${rfidMonitor.dataset.measurementUrl}?child_id=${scan.child.id}&device_id=${scanDeviceId}&source=iot`;
+                measurementLink.classList.remove('hidden');
+                const editLink = document.getElementById('rfid-edit-link');
+                editLink.href = scan.child.edit_url;
+                editLink.classList.remove('hidden');
+                const deleteForm = document.getElementById('rfid-delete-form');
+                deleteForm.action = scan.child.delete_url;
+                deleteForm.classList.remove('hidden');
+                const measurement = scan.latest_measurement;
+                document.getElementById('rfid-weight').textContent = measurement ? `${measurement.weight_kg} kg` : '-';
+                document.getElementById('rfid-height').textContent = measurement ? `${measurement.height_cm} cm` : '-';
+                document.getElementById('rfid-measured-at').textContent = measurement ? `Dicatat ${measurement.measured_at}` : 'Belum ada pengukuran.';
+            } catch (error) {
+                indicator.className = 'h-2.5 w-2.5 rounded-full bg-rose-500';
+                connectionLabel.textContent = 'Koneksi monitoring terputus';
+            }
+        }
+
+        refreshRfidMonitor();
+        window.setInterval(refreshRfidMonitor, 750);
+    </script>
+@endpush

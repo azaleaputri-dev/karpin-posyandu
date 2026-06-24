@@ -18,6 +18,7 @@ class Device extends Model
         'status',
         'last_seen_at',
         'api_token',
+        'api_token_hash',
     ];
 
     protected $casts = [
@@ -32,5 +33,10 @@ class Device extends Model
     public function measurements()
     {
         return $this->hasMany(Measurement::class);
+    }
+
+    public function rfidScans()
+    {
+        return $this->hasMany(RfidScan::class);
     }
 }

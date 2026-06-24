@@ -52,6 +52,7 @@ class DeviceController extends Controller
         ]);
 
         $data['api_token'] = Str::random(40);
+        $data['api_token_hash'] = hash('sha256', $data['api_token']);
 
         Device::create($data);
 

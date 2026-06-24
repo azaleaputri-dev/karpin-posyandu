@@ -27,7 +27,7 @@ class AdminUserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'admin@posyandu.test'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Administrator Posyandu',
                 'role' => 'admin',
@@ -37,7 +37,7 @@ class AdminUserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'petugas@posyandu.test'],
+            ['email' => 'petugas@gmail.com'],
             [
                 'name' => 'Petugas Posyandu',
                 'role' => 'petugas',

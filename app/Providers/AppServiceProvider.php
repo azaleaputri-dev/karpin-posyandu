@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 ['label' => 'Profil Saya', 'route' => 'profile.edit'],
                 ['label' => 'Data Anak', 'route' => 'children.index'],
                 ['label' => 'Pengukuran', 'route' => 'measurements.index'],
+                ['label' => 'RFID Bridge', 'route' => 'rfid-bridge.index'],
             ];
 
             if ($user && $user->isAdmin()) {
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
                     ['label' => 'Posyandu', 'route' => 'posyandus.index'],
                 ]);
                 $items[] = ['label' => 'Manajemen User', 'route' => 'users.index'];
-                $items[] = ['label' => 'Kartu RFID', 'route' => 'devices.index'];
+                $items[] = ['label' => 'Kartu RFID', 'route' => 'rfid-cards.index'];
             }
 
             $view->with('navItems', $items);

@@ -12,6 +12,7 @@ class Child extends Model
     protected $fillable = [
         'posyandu_id',
         'nik',
+        'rfid_uid',
         'child_name',
         'gender',
         'birth_date',
@@ -35,5 +36,10 @@ class Child extends Model
     public function measurements()
     {
         return $this->hasMany(Measurement::class);
+    }
+
+    public function rfidScans()
+    {
+        return $this->hasMany(RfidScan::class);
     }
 }

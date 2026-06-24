@@ -6,6 +6,7 @@ use App\Models\Child;
 use App\Models\Device;
 use App\Models\Measurement;
 use App\Models\Posyandu;
+use App\Models\RfidScan;
 use Illuminate\Http\Request;
 
 class MeasurementController extends Controller
@@ -67,6 +68,7 @@ class MeasurementController extends Controller
             'measurements' => $query->paginate(10)->withQueryString(),
             'filters' => $filters,
             'posyandus' => $posyandus,
+            'initialScanId' => RfidScan::max('id'),
         ]);
     }
 

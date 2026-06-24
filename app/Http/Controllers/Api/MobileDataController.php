@@ -78,6 +78,7 @@ class MobileDataController extends Controller
             $query->where(function ($builder) use ($search) {
                 $builder->where('child_name', 'like', '%' . $search . '%')
                     ->orWhere('nik', 'like', '%' . $search . '%')
+                    ->orWhere('rfid_uid', 'like', '%' . $this->normalizeRfidUid($search) . '%')
                     ->orWhere('mother_name', 'like', '%' . $search . '%');
             });
         }
@@ -98,6 +99,7 @@ class MobileDataController extends Controller
                     'id' => $child->id,
                     'child_name' => $child->child_name,
                     'nik' => $child->nik,
+                    'rfid_uid' => $child->rfid_uid,
                     'gender' => $child->gender,
                     'birth_date' => optional($child->birth_date)->format('Y-m-d'),
                     'mother_name' => $child->mother_name,
@@ -143,6 +145,7 @@ class MobileDataController extends Controller
                 'id' => $child->id,
                 'child_name' => $child->child_name,
                 'nik' => $child->nik,
+                'rfid_uid' => $child->rfid_uid,
                 'gender' => $child->gender,
                 'birth_date' => optional($child->birth_date)->format('Y-m-d'),
                 'birth_age_years' => optional($child->birth_date)->age,
@@ -214,9 +217,11 @@ class MobileDataController extends Controller
             abort(403, 'Admin tidak dapat menambahkan data anak dari alur ini.');
         }
 
+        $request->merge(['rfid_uid' => $this->normalizeRfidUid($request->input('rfid_uid'))]);
         $data = $request->validate([
             'posyandu_id' => ['required', 'exists:posyandus,id'],
             'nik' => ['nullable', 'string', 'max:32', 'unique:children,nik'],
+            'rfid_uid' => ['nullable', 'string', 'max:64', 'unique:children,rfid_uid'],
             'child_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birth_date' => ['required', 'date'],
@@ -230,6 +235,7 @@ class MobileDataController extends Controller
 
         $data['posyandu_id'] = $request->user()->posyandu_id;
 
+        $data['rfid_uid'] = $this->normalizeRfidUid($data['rfid_uid'] ?? null);
         $child = Child::create($data);
         $child->load('posyandu');
 
@@ -239,6 +245,7 @@ class MobileDataController extends Controller
                 'id' => $child->id,
                 'child_name' => $child->child_name,
                 'nik' => $child->nik,
+                'rfid_uid' => $child->rfid_uid,
                 'gender' => $child->gender,
                 'birth_date' => optional($child->birth_date)->format('Y-m-d'),
                 'mother_name' => $child->mother_name,
@@ -260,9 +267,11 @@ class MobileDataController extends Controller
             abort(403);
         }
 
+        $request->merge(['rfid_uid' => $this->normalizeRfidUid($request->input('rfid_uid'))]);
         $data = $request->validate([
             'posyandu_id' => ['required', 'exists:posyandus,id'],
             'nik' => ['nullable', 'string', 'max:32', 'unique:children,nik,' . $child->id],
+            'rfid_uid' => ['nullable', 'string', 'max:64', 'unique:children,rfid_uid,' . $child->id],
             'child_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birth_date' => ['required', 'date'],
@@ -276,6 +285,7 @@ class MobileDataController extends Controller
 
         $data['posyandu_id'] = $request->user()->posyandu_id;
 
+        $data['rfid_uid'] = $this->normalizeRfidUid($data['rfid_uid'] ?? null);
         $child->update($data);
         $child->load('posyandu');
 
@@ -285,6 +295,7 @@ class MobileDataController extends Controller
                 'id' => $child->id,
                 'child_name' => $child->child_name,
                 'nik' => $child->nik,
+                'rfid_uid' => $child->rfid_uid,
                 'gender' => $child->gender,
                 'birth_date' => optional($child->birth_date)->format('Y-m-d'),
                 'mother_name' => $child->mother_name,
@@ -578,5 +589,14 @@ class MobileDataController extends Controller
         }
 
         return '';
+    }
+
+    protected function normalizeRfidUid(?string $rfidUid): ?string
+    {
+        if (! $rfidUid) {
+            return null;
+        }
+
+        return strtoupper(preg_replace('/[^0-9A-Za-z]/', '', $rfidUid));
     }
 }

@@ -103,10 +103,12 @@ class ChildController extends Controller
     public function store(Request $request)
     {
         $this->ensureChildMutationAllowed();
+        $request->merge(['rfid_uid' => $this->normalizeRfidUid($request->input('rfid_uid'))]);
 
         $data = $request->validate([
             'posyandu_id' => ['required', 'exists:posyandus,id'],
             'nik' => ['nullable', 'string', 'max:32', 'unique:children,nik'],
+            'rfid_uid' => ['nullable', 'string', 'max:64', 'unique:children,rfid_uid'],
             'child_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birth_date' => ['required', 'date'],
@@ -122,6 +124,7 @@ class ChildController extends Controller
             $data['posyandu_id'] = $this->petugasPosyanduId();
         }
 
+        $data['rfid_uid'] = $this->normalizeRfidUid($data['rfid_uid'] ?? null);
         Child::create($data);
 
         return redirect()->route('children.index')->with('status', 'Data anak berhasil ditambahkan.');
@@ -159,10 +162,12 @@ class ChildController extends Controller
     {
         $this->ensureChildMutationAllowed();
         $this->ensureChildAccessible($child);
+        $request->merge(['rfid_uid' => $this->normalizeRfidUid($request->input('rfid_uid'))]);
 
         $data = $request->validate([
             'posyandu_id' => ['required', 'exists:posyandus,id'],
             'nik' => ['nullable', 'string', 'max:32', 'unique:children,nik,' . $child->id],
+            'rfid_uid' => ['nullable', 'string', 'max:64', 'unique:children,rfid_uid,' . $child->id],
             'child_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birth_date' => ['required', 'date'],
@@ -178,6 +183,7 @@ class ChildController extends Controller
             $data['posyandu_id'] = $this->petugasPosyanduId();
         }
 
+        $data['rfid_uid'] = $this->normalizeRfidUid($data['rfid_uid'] ?? null);
         $child->update($data);
 
         return redirect()->route('children.index')->with('status', 'Data anak berhasil diperbarui.');
@@ -208,9 +214,7 @@ class ChildController extends Controller
 
     protected function ensureChildMutationAllowed()
     {
-        if ($this->isAdmin()) {
-            abort(403);
-        }
+        abort_unless($this->currentUser() && ($this->isAdmin() || $this->currentUser()->isPetugas()), 403);
     }
 
     protected function buildChildDetailPayload(Child $child)
@@ -317,5 +321,14 @@ class ChildController extends Controller
         }
 
         return '';
+    }
+
+    protected function normalizeRfidUid(?string $rfidUid): ?string
+    {
+        if (! $rfidUid) {
+            return null;
+        }
+
+        return strtoupper(preg_replace('/[^0-9A-Za-z]/', '', $rfidUid));
     }
 }

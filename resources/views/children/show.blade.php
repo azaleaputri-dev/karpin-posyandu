@@ -8,7 +8,7 @@
                     'eyebrow' => 'Detail Profil Anak',
                     'title' => $child->child_name,
                     'description' => 'Pantau pertumbuhan berat dan tinggi badan anak secara real-time.',
-                    'action' => new \Illuminate\Support\HtmlString('<div class="flex gap-3"><a href="' . route('children.export-pdf', $child) . '" class="btn-secondary px-6">Export PDF</a><a href="' . route('children.index') . '" class="btn-secondary px-6">Kembali</a></div>'),
+                    'action' => new \Illuminate\Support\HtmlString('<div class="flex gap-3"><a href="' . route('children.edit', $child) . '" class="btn-primary px-6">Edit Data</a><a href="' . route('children.export-pdf', $child) . '" class="btn-secondary px-6">Export PDF</a><a href="' . route('children.index') . '" class="btn-secondary px-6">Kembali</a></div>'),
                 ])
 
                 <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -37,9 +37,7 @@
                         <h3 class="text-xl font-black tracking-tight text-slate-800">Grafik Pertumbuhan</h3>
                         <p class="text-sm font-medium text-slate-400">Visualisasi tren berat dan tinggi badan.</p>
                     </div>
-                    @unless (auth()->user()->isAdmin())
-                        <a href="{{ route('measurements.create') }}" class="btn-primary px-6">Tambah Pengukuran</a>
-                    @endunless
+                    <a href="{{ route('measurements.create', ['child_id' => $child->id]) }}" class="btn-primary px-6">Tambah Pengukuran</a>
                 </div>
 
                 @if ($summary['total_measurements'] > 0)

@@ -11,7 +11,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('mobile')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
@@ -31,5 +31,6 @@ Route::prefix('mobile')->group(function () {
 
 Route::prefix('iot')->group(function () {
     Route::get('/ping', [IotMeasurementController::class, 'ping']);
+    Route::post('/rfid/scan', [IotMeasurementController::class, 'scanRfid']);
     Route::post('/measurements', [IotMeasurementController::class, 'store']);
 });

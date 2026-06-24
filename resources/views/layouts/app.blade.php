@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon-rounded.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon-rounded.png') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="overflow-x-hidden bg-slate-100 text-slate-900">
@@ -35,8 +37,8 @@
         <main class="flex min-w-0 flex-1 flex-col">
             <header class="animate-float-in flex h-[6rem] shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 py-4 lg:h-[6.5rem] lg:px-8">
                 <div class="flex items-center gap-4">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-base font-black text-brand-600">
-                        {{ substr(auth()->user()->name, 0, 1) }}
+                    <div class="h-12 w-12 overflow-hidden rounded-full ring-2 ring-brand-100">
+                        <img src="{{ asset('logo-posyandu-smart-card.jpeg') }}" alt="Logo Posyandu Smart Card" class="h-full w-full object-cover object-center">
                     </div>
                     <div>
                         <h2 class="text-[1.05rem] font-black leading-none tracking-tight text-slate-900">{{ auth()->user()->name }}</h2>

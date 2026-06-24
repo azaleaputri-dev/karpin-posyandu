@@ -6,9 +6,7 @@
             'eyebrow' => 'Master Data',
             'title' => 'Data Anak',
             'description' => 'Kelola profil anak untuk Kartu Pintar Posyandu.',
-            'action' => auth()->user()->isAdmin()
-                ? null
-                : new \Illuminate\Support\HtmlString('<a href="' . route('children.create') . '" class="btn-primary px-8">Tambah Anak</a>'),
+            'action' => new \Illuminate\Support\HtmlString('<a href="' . route('children.create') . '" class="btn-primary px-8">Tambah Anak</a>'),
         ])
 
         <form method="GET" action="{{ route('children.index') }}" class="mt-8 grid gap-6 rounded-[2rem] bg-slate-50/50 p-6 ring-1 ring-black/5 md:grid-cols-[1.2fr_0.8fr_1fr_auto]">
@@ -76,14 +74,12 @@
                             <td class="py-5 pr-4">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('children.show', $child) }}" class="btn-secondary px-4 py-2 text-xs" title="Lihat Grafik">Grafik</a>
-                                    @unless (auth()->user()->isAdmin())
-                                        <a href="{{ route('children.edit', $child) }}" class="btn-secondary px-4 py-2 text-xs" title="Edit Data">Edit</a>
-                                        <form action="{{ route('children.destroy', $child) }}" method="POST" onsubmit="return confirm('Hapus data ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-secondary px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 hover:border-rose-200" title="Hapus Data">Hapus</button>
-                                        </form>
-                                    @endunless
+                                    <a href="{{ route('children.edit', $child) }}" class="btn-secondary px-4 py-2 text-xs" title="Edit Data">Edit</a>
+                                    <form action="{{ route('children.destroy', $child) }}" method="POST" onsubmit="return confirm('Hapus data ini beserta riwayat pengukurannya?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-secondary px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 hover:border-rose-200" title="Hapus Data">Hapus</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

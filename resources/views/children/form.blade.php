@@ -22,6 +22,11 @@
         @include('partials.field-error', ['name' => 'nik'])
     </div>
     <div class="space-y-1.5">
+        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1" for="rfid_uid">UID Kartu RFID</label>
+        <input id="rfid_uid" name="rfid_uid" value="{{ old('rfid_uid', $child->rfid_uid ?? '') }}" class="input !bg-slate-50 focus:!bg-white transition-all uppercase" placeholder="Contoh: A1B2C3D4">
+        @include('partials.field-error', ['name' => 'rfid_uid'])
+    </div>
+    <div class="space-y-1.5">
         <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1" for="child_name">Nama Lengkap Anak</label>
         <input id="child_name" name="child_name" value="{{ old('child_name', $child->child_name ?? '') }}" class="input !bg-slate-50 focus:!bg-white transition-all" placeholder="Input nama lengkap sesuai akta" required>
         @include('partials.field-error', ['name' => 'child_name'])

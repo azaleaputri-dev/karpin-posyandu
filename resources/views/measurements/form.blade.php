@@ -4,7 +4,7 @@
         <select id="child_id" name="child_id" class="input !bg-slate-50 focus:!bg-white" required>
             <option value="">Pilih data anak</option>
             @foreach ($children as $childOption)
-                <option value="{{ $childOption->id }}" {{ old('child_id', $measurement->child_id ?? '') == $childOption->id ? 'selected' : '' }}>{{ $childOption->child_name }}</option>
+                <option value="{{ $childOption->id }}" {{ old('child_id', $measurement->child_id ?? request('child_id')) == $childOption->id ? 'selected' : '' }}>{{ $childOption->child_name }}</option>
             @endforeach
         </select>
         @include('partials.field-error', ['name' => 'child_id'])
@@ -14,7 +14,7 @@
         <select id="device_id" name="device_id" class="input !bg-slate-50 focus:!bg-white">
             <option value="">Manual input (Petugas)</option>
             @foreach ($devices as $deviceOption)
-                <option value="{{ $deviceOption->id }}" {{ old('device_id', $measurement->device_id ?? '') == $deviceOption->id ? 'selected' : '' }}>{{ $deviceOption->device_name }}</option>
+                <option value="{{ $deviceOption->id }}" {{ old('device_id', $measurement->device_id ?? request('device_id')) == $deviceOption->id ? 'selected' : '' }}>{{ $deviceOption->device_name }}</option>
             @endforeach
         </select>
         @include('partials.field-error', ['name' => 'device_id'])
@@ -28,8 +28,8 @@
         <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1" for="source">Kategori Sumber</label>
         @if (auth()->user()->isAdmin())
             <select id="source" name="source" class="input !bg-slate-50 focus:!bg-white" required>
-                <option value="manual" {{ old('source', $measurement->source ?? 'manual') === 'manual' ? 'selected' : '' }}>Entri Manual</option>
-                <option value="iot" {{ old('source', $measurement->source ?? '') === 'iot' ? 'selected' : '' }}>Scan RFID / Sinkronisasi</option>
+                <option value="manual" {{ old('source', $measurement->source ?? request('source', 'manual')) === 'manual' ? 'selected' : '' }}>Entri Manual</option>
+                <option value="iot" {{ old('source', $measurement->source ?? request('source')) === 'iot' ? 'selected' : '' }}>Scan RFID / Sinkronisasi</option>
             </select>
         @else
             <input type="hidden" name="source" value="manual">

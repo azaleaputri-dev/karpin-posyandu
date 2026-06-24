@@ -4,9 +4,9 @@
     <section class="card border-none p-8">
         @include('partials.page-header', [
             'eyebrow' => 'Registrasi RFID',
-            'title' => 'Kartu RFID Terdaftar',
-            'description' => 'Kelola kartu RFID yang dipakai sebagai identitas digital pengganti buku KIA.',
-            'action' => new \Illuminate\Support\HtmlString('<a href="' . route('devices.create') . '" class="btn-primary px-8">Tambah Kartu RFID</a>'),
+            'title' => 'Perangkat RFID',
+            'description' => 'Tambah dan kelola reader atau perangkat RFID yang terhubung ke sistem.',
+            'action' => new \Illuminate\Support\HtmlString('<a href="' . route('devices.create') . '" class="btn-primary px-8">Tambah Perangkat RFID</a>'),
         ])
 
         <div class="relative mt-8 overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white shadow-xl shadow-brand-900/20">
